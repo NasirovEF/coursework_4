@@ -25,7 +25,7 @@ class HeadHunterAPI(ABC):
 
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
-        with open("../data/vacancyapi.json", "w", encoding="utf-8") as file:
+        with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
             json.dump(self.get_vacancy(), file, ensure_ascii=False)
 
     def __str__(self):
