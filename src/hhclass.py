@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import requests
+import json
 
 
 class ApiClass(ABC):
@@ -20,8 +21,21 @@ class HeadHunterAPI(ABC):
     def get_vacancy(self) -> dict:
         """Метод для подключения через API к HH и получение вакансий"""
         response = requests.get(self.url)
-        return response.json().get("items")
+        return response.json() #.get("items")
 
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
-        pass
+        with open("../data/vacancyapi.json", "w", encoding="utf-8") as file:
+            json.dump(self.get_vacancy(), file, ensure_ascii=False)
+
+    def __str__(self):
+        return f'Найдено {self.get_vacancy().get("found")} вакансий'
+
+
+
+
+# url = "https://api.hh.ru/vacancies"
+#
+# vacancy = HeadHunterAPI(url)
+# vacancy.writing_to_file()
+# print(vacancy)
