@@ -7,16 +7,16 @@ class ApiClass(ABC):
     """Абстрактный класс для работы с API сервиса с вакансиями"""
 
     @abstractmethod
-    def et_vacancy(self):
+    def get_vacancy(self):
         pass
 
 
 class HeadHunterAPI(ABC):
     """Класс для работы с платформой hh.ru"""
 
-    def __init__(self, url) -> None:
+    def __init__(self) -> None:
         """Конструктор для класса"""
-        self.url = url
+        self.url = "https://api.hh.ru/vacancies"
 
     def get_information(self) -> dict:
         """Метод для подключения через API к HH и получение вакансий"""
@@ -30,12 +30,3 @@ class HeadHunterAPI(ABC):
 
     def __str__(self):
         return f'Найдено {self.get_information.get("found")} вакансий'
-
-
-
-
-# url = "https://api.hh.ru/vacancies"
-#
-# vacancy = HeadHunterAPI(url)
-# vacancy.writing_to_file()
-# print(vacancy)
