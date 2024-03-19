@@ -17,16 +17,37 @@ class HeadHunterAPI(ABC):
     def __init__(self) -> None:
         """Конструктор для класса"""
         self.url = "https://api.hh.ru/vacancies"
+        self.headers = {'User-Agent': 'HH-User-Agent'}
+        self.params = {'text': '', 'page': 0, 'per_page': 100,
+                       'only_with_salary': True}
+        self.vacancies = []
 
-    def get_information(self) -> dict:
+    def get_salary(self, salary) -> None:
+        """Метод для внесения в параметры поиска нижней границы зарплаты"""
+        self.params['salary_from'] = salary
+
+    def load_vacancies(self, keyword):
         """Метод для подключения через API к HH и получение вакансий"""
-        response = requests.get(self.url)
-        return response.json() #.get("items")
+        self.params['text'] = keyword
+        while self.params.get('page') != 20:
+            response = requests.get(self.url, headers=self.headers, params=self.params)
+            vacancies = response.json()['items']
+            self.vacancies.extend(vacancies)
+            self.params['page'] += 1
 
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
         with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
-            json.dump(self.get_information(), file, indent=4, ensure_ascii=False)
+            json.dump(self.vacancies, file, indent=4, ensure_ascii=False)
 
     def __str__(self):
-        return f'Найдено {self.get_information.get("found")} вакансий'
+        return f'Найдено {len(self.vacancies)} вакансий'
+
+
+exp2 = HeadHunterAPI()
+keyword = "бариста"
+exp2.get_salary(100000)
+exp2.load_vacancies(keyword)
+exp2.writing_to_file()
+print(exp2)
+
