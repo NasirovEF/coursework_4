@@ -35,6 +35,10 @@ class HeadHunterAPI(ABC):
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
 
+    def sort_vacancies(self):
+        """Метод сортирует ваканссии по зарплате"""
+        sorted(self.vacancies, reverse=True, key=lambda vacancy: vacancy.get('salary')['from'])
+
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
         with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
@@ -51,7 +55,7 @@ class HeadHunterAPI(ABC):
             self.params['area'] = None
         else:
             for item in area_response.json().get('items'):
-                print(f'{item['text']} - {item['id']}')
+                print(f'{item['text']} - id {item['id']}')
             user_input = input("Введите id выбранного региона ")
             self.params['area'] = int(user_input)
 
@@ -64,6 +68,7 @@ keyword1 = "python"
 exp2.get_region()
 exp2.get_salary(100000)
 exp2.load_vacancies(keyword1)
+exp2.sort_vacancies()
 exp2.writing_to_file()
 print(exp2)
 
