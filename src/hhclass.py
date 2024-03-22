@@ -19,11 +19,11 @@ class HeadHunterAPI(ABC):
         self.url = "https://api.hh.ru/vacancies"
         self.headers = {'User-Agent': 'HH-User-Agent'}
         self.params = {'text': '', 'page': 0, 'per_page': 100,
-                       'only_with_salary': True, 'area': 24}
+                       'only_with_salary': True}
         self.vacancies = []
 
     def get_salary(self, salary) -> None:
-        """Метод для внесения в параметры поиска нижней границы зарплаты"""
+        """Метод для внесения в параметры поиска зарплаты"""
         self.params['salary'] = salary
 
     def load_vacancies(self, keyword):
@@ -38,14 +38,22 @@ class HeadHunterAPI(ABC):
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
         with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
-            json.dump(self.vacancies, file, ensure_ascii=False)
+            json.dump(self.vacancies, file, indent=4, ensure_ascii=False)
 
-    def get_region(self, city):
+    def get_region(self):
         """Метод, позволяющий выбрать регион поиска вакансий"""
         area_url = "https://api.hh.ru/suggests/areas"
-        area_params = {'text': str(city)}
+        city = str(input("Введите регион поиска "))
+        area_params = {'text': city}
         area_response = requests.get(area_url, params=area_params)
-        pass
+        if len(area_response.json().get('items')) == 0:
+            print("К сожалению ничего не найдено. Поиск будет осуществлен по всем регионам")
+            self.params['area'] = None
+        else:
+            for item in area_response.json().get('items'):
+                print(f'{item['text']} - {item['id']}')
+            user_input = input("Введите id выбранного региона ")
+            self.params['area'] = int(user_input)
 
     def __str__(self):
         return f'Найдено {len(self.vacancies)} вакансий'
@@ -53,6 +61,7 @@ class HeadHunterAPI(ABC):
 
 exp2 = HeadHunterAPI()
 keyword1 = "python"
+exp2.get_region()
 exp2.get_salary(100000)
 exp2.load_vacancies(keyword1)
 exp2.writing_to_file()
