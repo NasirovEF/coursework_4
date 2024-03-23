@@ -1,4 +1,14 @@
-class Vacancy:
+from abc import ABC, abstractmethod
+
+
+class WritingVacancy(ABC):
+
+    @abstractmethod
+    def writing_to_file(self):
+        pass
+
+
+class Vacancy(WritingVacancy):
 
     def __init__(self, vacancy):
         """Конструктор для класса"""
