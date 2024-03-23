@@ -11,7 +11,7 @@ class ApiClass(ABC):
         pass
 
     @abstractmethod
-    def writing_to_file(self):
+    def writing_to_file(self, f):
         pass
 
 
@@ -30,24 +30,27 @@ class HeadHunterAPI(ABC):
         """Метод для внесения в параметры поиска зарплаты"""
         self.params['salary'] = salary
 
-    def load_vacancies(self, keyword):
-        """Метод для подключения через API к HH и получение вакансий"""
+    def get_name_vakancy(self, keyword):
+        """Метод для внесения в параметры поиска названия вакансии"""
         self.params['text'] = keyword
+
+    def load_vacancies(self):
+        """Метод для подключения через API к HH и получение вакансий"""
         while self.params.get('page') != 20:
             response = requests.get(self.url, headers=self.headers, params=self.params)
             vacancies = response.json()['items']
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
 
-    def writing_to_file(self):
+    def writing_to_file(self, json_file):
         """Записывает полученные вакансии в файл json"""
-        with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
+        with open(json_file, "w", encoding="utf-8") as file:
             json.dump(self.vacancies, file, indent=4, ensure_ascii=False)
 
     def get_region(self):
         """Метод, позволяющий выбрать регион поиска вакансий"""
         area_url = "https://api.hh.ru/suggests/areas"
-        city = str(input("Введите регион поиска "))
+        city = str(input("Введите регион поиска: "))
         area_params = {'text': city}
         area_response = requests.get(area_url, params=area_params)
         if len(area_response.json().get('items')) == 0:
@@ -61,4 +64,3 @@ class HeadHunterAPI(ABC):
 
     def __str__(self):
         return f'По запросу "{self.params['text']}" найдено {len(self.vacancies)} вакансий'
-
