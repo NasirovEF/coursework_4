@@ -29,6 +29,16 @@ class Vacancy(WritingVacancy):
             self.__salary_from = vacancy.get('salary')['from']
         self.__salary_to = vacancy.get('salary')['to']
 
+    @property
+    def salary_from(self):
+        """Геттер для нижней границы зарплаты"""
+        return self.__salary_from
+
+    @property
+    def salary_to(self):
+        """Геттер для верхней границы зарплаты"""
+        return self.__salary_to
+
     def writing_to_file(self, txt_file):
         """Записывает полученные вакансии в файл"""
         with open(txt_file, "a", encoding="utf-8") as file:
