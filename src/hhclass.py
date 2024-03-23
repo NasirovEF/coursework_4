@@ -1,7 +1,6 @@
 from abc import ABC, abstractmethod
 import requests
 import json
-from vacancy import Vacancy
 
 
 class ApiClass(ABC):
