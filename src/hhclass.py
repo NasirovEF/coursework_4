@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 import requests
 import json
+from vacancy import Vacancy
 
 
 class ApiClass(ABC):
@@ -8,6 +9,10 @@ class ApiClass(ABC):
 
     @abstractmethod
     def get_vacancy(self):
+        pass
+
+    @abstractmethod
+    def writing_to_file(self):
         pass
 
 
@@ -35,10 +40,6 @@ class HeadHunterAPI(ABC):
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
 
-    def sort_vacancies(self):
-        """Метод сортирует ваканссии по зарплате"""
-        sorted(self.vacancies, reverse=True, key=lambda vacancy: vacancy.get('salary')['from'])
-
     def writing_to_file(self):
         """Записывает полученные вакансии в файл json"""
         with open("../data/apivacancy.json", "w", encoding="utf-8") as file:
@@ -60,15 +61,5 @@ class HeadHunterAPI(ABC):
             self.params['area'] = int(user_input)
 
     def __str__(self):
-        return f'Найдено {len(self.vacancies)} вакансий'
-
-
-exp2 = HeadHunterAPI()
-keyword1 = "python"
-exp2.get_region()
-exp2.get_salary(100000)
-exp2.load_vacancies(keyword1)
-exp2.sort_vacancies()
-exp2.writing_to_file()
-print(exp2)
+        return f'По запросу "{self.params['text']}" найдено {len(self.vacancies)} вакансий'
 
