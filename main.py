@@ -10,14 +10,22 @@ def main():
     search.get_salary(int(input("Введите уровень желаемой зарплаты: ")))
     search.get_region()
     search.load_vacancies()
+    # search.sort_vakancy()
     search.writing_to_file("data/apivacancy.json")
+    if len(search.vacancies) == 0:
+        print("К сожалению в указанном регионе вакансии не найдены. Выведены результаты по всем регионам")
+        search.params['area'] = None
+        search.load_vacancies()
     print(search)
-    quantity_vacancion = int(input("Введите количество вакансий для вывода: "))
-    with open("data/apivacancy.json", encoding="utf-8") as file:
-        for v in json.load(file)[:quantity_vacancion]:
-            vacancy = Vacancy(v)
-            vacancy.writing_to_file("data/vacancies.txt")
-            print(vacancy)
+    if len(search.vacancies) != 0:
+        quantity_vacancion = int(input("Введите количество вакансий для вывода: "))
+        with open("data/apivacancy.json", encoding="utf-8") as file:
+            numb_vak = 0
+            for v in json.load(file)[:quantity_vacancion]:
+                vacancy = Vacancy(v)
+                numb_vak += 1
+                vacancy.writing_to_file(numb_vak, "data/vacancies.txt")
+                print(vacancy)
 
 
 if __name__ == '__main__':
