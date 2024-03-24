@@ -10,7 +10,6 @@ def main():
     search.get_salary(int(input("Введите уровень желаемой зарплаты: ")))
     search.get_region()
     search.load_vacancies()
-    # search.sort_vakancy()
     search.writing_to_file("data/apivacancy.json")
     if len(search.vacancies) == 0:
         print("К сожалению в указанном регионе вакансии не найдены. Выведены результаты по всем регионам")
