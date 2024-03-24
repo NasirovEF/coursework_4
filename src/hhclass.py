@@ -42,6 +42,11 @@ class HeadHunterAPI(ABC):
             self.vacancies.extend(vacancies)
             self.params['page'] += 1
 
+    # метод не доработал пока что
+    # def sort_vakancy(self):
+    #     """Метод для сортировки вакансий по зарплате"""
+    #     sorted(self.vacancies, key=lambda vacancy: vacancy.get('salary')['from'])
+
     def writing_to_file(self, json_file):
         """Записывает полученные вакансии в файл json"""
         with open(json_file, "w", encoding="utf-8") as file:
