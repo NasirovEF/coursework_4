@@ -1,14 +1,4 @@
-from abc import ABC, abstractmethod
-
-
-class WritingVacancy(ABC):
-
-    @abstractmethod
-    def writing_to_file(self, f):
-        pass
-
-
-class Vacancy(WritingVacancy):
+class Vacancy:
 
     def __init__(self, vacancy):
         """Конструктор для класса"""
@@ -38,11 +28,6 @@ class Vacancy(WritingVacancy):
     def salary_to(self):
         """Геттер для верхней границы зарплаты"""
         return self.__salary_to
-
-    def writing_to_file(self, txt_file):
-        """Записывает полученные вакансии в файл"""
-        with open(txt_file, "a", encoding="utf-8") as file:
-            file.write(f'\n{self.__str__()}')
 
     def __str__(self):
         return (f'{self.name}\nЗарплата: {self.__salary_from} - {self.__salary_to}\n'
