@@ -1,21 +1,18 @@
 from abc import ABC, abstractmethod
 import requests
-import json
+from src.writing_in_file import WorkWithFile
+from src.vacancy import Vacancy
 
 
 class ApiClass(ABC):
     """Абстрактный класс для работы с API сервиса с вакансиями"""
 
     @abstractmethod
-    def get_vacancy(self):
-        pass
-
-    @abstractmethod
-    def writing_to_file(self, f):
+    def load_vacancies(self):
         pass
 
 
-class HeadHunterAPI(ABC):
+class HeadHunterAPI(ApiClass, WorkWithFile):
     """Класс для работы с платформой hh.ru"""
 
     def __init__(self) -> None:
@@ -47,11 +44,6 @@ class HeadHunterAPI(ABC):
     #     """Метод для сортировки вакансий по зарплате"""
     #     sorted(self.vacancies, key=lambda vacancy: vacancy.get('salary')['from'])
 
-    def writing_to_file(self, json_file):
-        """Записывает полученные вакансии в файл json"""
-        with open(json_file, "w", encoding="utf-8") as file:
-            json.dump(self.vacancies, file, indent=4, ensure_ascii=False)
-
     def get_region(self):
         """Метод, позволяющий выбрать регион поиска вакансий"""
         area_url = "https://api.hh.ru/suggests/areas"
@@ -66,6 +58,18 @@ class HeadHunterAPI(ABC):
                 print(f'{item['text']} - id {item['id']}')
             user_input = input("Введите id выбранного региона ")
             self.params['area'] = int(user_input)
+
+    @staticmethod
+    def get_str_vak(vacancies):
+        """Метод для создания объектов класса Vacancy"""
+        vak_str = ""
+        numb_vak = 0
+        for vakancy in vacancies:
+            inst_vacancy = Vacancy(vakancy)
+            numb_vak += 1
+            vak_str += f'\n№{numb_vak} {str(inst_vacancy)}'
+
+        return vak_str
 
     def __str__(self):
         return f'По запросу "{self.params['text']}" найдено {len(self.vacancies)} вакансий'
