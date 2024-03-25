@@ -1,6 +1,4 @@
-import json
 from src.hhclass import HeadHunterAPI
-from src.vacancy import Vacancy
 
 
 def main():
@@ -10,7 +8,7 @@ def main():
     search.get_salary(int(input("Введите уровень желаемой зарплаты: ")))
     search.get_region()
     search.load_vacancies()
-    search.writing_to_file("data/apivacancy.json")
+    search.write_json(search.vacancies,"data/apivacancy.json")
     if len(search.vacancies) == 0:
         print("К сожалению в указанном регионе вакансии не найдены. Выведены результаты по всем регионам")
         search.params['area'] = None
@@ -18,13 +16,10 @@ def main():
     print(search)
     if len(search.vacancies) != 0:
         quantity_vacancion = int(input("Введите количество вакансий для вывода: "))
-        with open("data/apivacancy.json", encoding="utf-8") as file:
-            numb_vak = 0
-            for v in json.load(file)[:quantity_vacancion]:
-                vacancy = Vacancy(v)
-                numb_vak += 1
-                vacancy.writing_to_file(numb_vak, "data/vacancies.txt")
-                print(vacancy)
+        vak_list = search.read_json("data/apivacancy.json", quantity_vacancion)
+        vak_str = search.get_str_vak(vak_list)
+        search.write_txt("data/vacancies.txt", vak_str)
+        print(vak_str)
 
 
 if __name__ == '__main__':
